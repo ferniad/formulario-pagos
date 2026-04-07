@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    
+    <base target="_top">
+    <meta http-equiv="Content-Security-Policy" content="img-src * data:; default-src * 'unsafe-inline' 'unsafe-eval';">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Pago a Empleado - Formulario Latex</title>
+    <style>
+        /* RESET y estilos base basados en la paleta de colores */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, 'Segoe UI', 'Inter', 'Poppins', sans-serif;
+            background: linear-gradient(145deg, #faf9fd 0%, #efedf1 100%);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Contenedor principal con scroll-snap-type MANDATORY en eje Y */
+        .scroll-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        /* Cada sección será un slide de pantalla completa con scroll-snap-align start */
+        .slide {
+            scroll-snap-align: start;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 2rem;
+        }
+
+        /* Fondos con gradientes de la paleta */
+        .slide:nth-child(1) { 
+            background: linear-gradient(135deg, #faf9fd 0%, #e3e2e6 100%);
+        }
+        .slide:nth-child(2) { 
+            background: linear-gradient(135deg, #efedf1 0%, #f4f3f7 100%);
+        }
+        .slide:nth-child(3) { 
+            background: linear-gradient(135deg, #faf9fd 0%, #e9e7eb 100%);
+        }
+        .slide:nth-child(4) { 
+            background: linear-gradient(135deg, #efedf1 0%, #e3e2e6 100%);
+        }
+
+        /* Tarjeta estilosa con colores de la paleta */
+        .card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            border-radius: 64px 48px 64px 48px;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(215, 226, 255, 0.8);
+            padding: 2.5rem;
+            max-width: 750px;
+            width: 100%;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(46, 93, 166, 0.15);
+        }
+
+        /* Scroll-Driven Animations: elementos que aparecen según scroll */
+        @keyframes fadeSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Usamos view-timeline y animation-range para que se anime al hacer scroll */
+        .animate-on-scroll {
+            animation: fadeSlideUp linear;
+            animation-timeline: view();
+            animation-range: entry 0% entry 80%;
+        }
+
+        /* Estilo de grupo de formulario */
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            font-size: 1rem;
+            color: #1b1b1e;
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        label i {
+            font-style: normal;
+            font-weight: 800;
+            background: linear-gradient(135deg, #2e5da6, #09458d);
+            color: white;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            font-size: 0.85rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            font-size: 1rem;
+            border: 2px solid #c3c8d5;
+            border-radius: 48px;
+            background: #ffffff;
+            transition: all 0.25s;
+            font-family: inherit;
+            outline: none;
+            color: #1b1b1e;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #2e5da6;
+            box-shadow: 0 0 0 4px rgba(46, 93, 166, 0.15);
+        }
+
+        /* Botón principal con gradiente de la paleta */
+        .btn-submit {
+            background: linear-gradient(135deg, #2e5da6, #09458d);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 60px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            box-shadow: 0 8px 14px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-submit:hover {
+            transform: scale(0.98);
+            background: linear-gradient(135deg, #09458d, #002f66);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Logo area con imagen real */
+        .logo-area {
+            width: 100%;
+            background: linear-gradient(125deg, #faf9fd, #e3e2e6);
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin-bottom: 2rem;
+            border: 2px solid #d7e2ff;
+            transition: all 0.2s;
+            aspect-ratio: 1000 / 500;
+            min-height: auto;
+            position: relative;
+            overflow: hidden;
+            padding: 1rem;
+        }
+
+        .logo-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 24px;
+        }
+
+        .logo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(125deg, #faf9fd, #dae2f8);
+            border-radius: 24px;
+        }
+
+        .logo-placeholder span {
+            color: #2e5da6;
+            font-weight: 500;
+            background: rgba(255,255,255,0.8);
+            padding: 8px 16px;
+            border-radius: 40px;
+        }
+
+        /* SCROLL BUTTON (botón flotante para navegar entre secciones) */
+        .scroll-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .scroll-btn {
+            background: rgba(46, 93, 166, 0.9);
+            backdrop-filter: blur(8px);
+            width: 52px;
+            height: 52px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(215, 226, 255, 0.6);
+            cursor: pointer;
+        }
+
+        .scroll-btn:hover {
+            background: #09458d;
+            transform: scale(1.05);
+        }
+
+        /* SCROLL MARKER: indicador visual del progreso de scroll */
+        .scroll-marker {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1100;
+            background: rgba(46, 93, 166, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 8px 16px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 500;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: monospace;
+            letter-spacing: 1px;
+            border: 1px solid rgba(215, 226, 255, 0.5);
+            pointer-events: none;
+        }
+
+        .marker-progress {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .marker-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #d7e2ff, #ffffff);
+            border-radius: 6px;
+            transition: width 0.1s linear;
+        }
+
+        /* Campo condicional */
+        .conditional-field {
+            transition: all 0.2s;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #c3c8d5, transparent);
+        }
+
+        .small-note {
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #46474a;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #c3c8d5;
+            border-top-color: #2e5da6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .select-loading {
+            background-color: #f4f3f7;
+            cursor: wait;
+        }
+
+        /* vista responsiva */
+        @media (max-width: 700px) {
+            .card {
+                padding: 1.5rem;
+                border-radius: 40px;
+            }
+            .scroll-buttons {
+                bottom: 20px;
+                right: 20px;
+            }
+            .scroll-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 24px;
+            }
+            .scroll-marker {
+                top: 10px;
+                left: 10px;
+                font-size: 0.7rem;
+                padding: 6px 12px;
+            }
+            .marker-progress {
+                width: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="scroll-container" id="scrollContainer">
+    <!-- SECCIÓN 1: LOGO Y PRESENTACIÓN -->
+      <section class="slide">
+          <div class="card animate-on-scroll">
+              <!-- Espacio para logo con imagen LogoLatex1.png -->
+              <div class="logo-area">                
+                <div class="logo-placeholder">
+                    <img src="https://lh3.googleusercontent.com/d/1RW4R6dlTg1ykvTptF2AGsqiwqgIr1R6V=w400" 
+                        alt="Logo Latex"
+                        style="max-width: 200px; height: auto;"
+                        onerror="this.onerror=null; console.log('Error carga imagen'); this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22100%22%3E%3Crect%20width%3D%22200%22%20height%3D%22100%22%20fill%3D%22%23f0f0f0%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20fill%3D%22%23999%22%3ELogo%3C%2Ftext%3E%3C%2Fsvg%3E';">
+                </div>
+              </div>
+              <h1 style="font-size: 2.2rem; margin: 0.5rem 0 0.2rem; background: linear-gradient(135deg, #2e5da6, #09458d); -webkit-background-clip: text; background-clip: text; color: transparent;">Registro de Pago</h1>
+              <p style="color: #46474a; margin-bottom: 1rem;">Completa los datos para que el pago sea eficiente</p>
+              <div class="small-note" style="margin-top: 0;">✨ Desliza hacia abajo para continuar ✨</div>
+          </div>
+      </section>
+
+    <!-- SECCIÓN 2: FORMULARIO PRINCIPAL (DATOS DE PAGO) -->
+    <section class="slide">
+        <div class="card animate-on-scroll">
+            <h2 style="margin-bottom: 1.5rem; font-weight: 600; color: #1b1b1e;">🧾 Datos del empleado</h2>
+            <form id="paymentForm">
+                <!-- Nombre completo -->
+                <div class="form-group">
+                    <label><i>📛</i> Nombre completo :</label>
+                    <input type="text" id="fullname" name="fullname" placeholder="Ej. Ana María Rodríguez Pérez" required>
+                </div>
+
+                <!-- Materia de la tutoría (cargada desde Google Sheets) -->
+                <div class="form-group">
+                    <label><i>📚</i> Materia de la tutoría :</label>
+                    <select id="subjectSelect" name="subject">
+                        <option value="">Cargando materias...</option>
+                    </select>
+                </div>
+
+                <!-- Medio de pago -->
+                <div class="form-group">
+                    <label><i>💳</i> Medio de pago <span style="font-weight:normal; font-size:0.8rem; color:#76777a;">(si es llave de breve dejar en blanco)</span></label>
+                    <select id="paymentMethod" name="paymentMethod">
+                        <option value="">-- Selecciona o déjalo en blanco --</option>
+                        <option value="Efectivo (acordar encuentro y dejar en blanco la parte inferior)">Efectivo</option>
+                        <option value="Nequi">Nequi</option>
+                        <option value="Nu">Nu</option>
+                        <option value="Breve (llave)">Breve (llave)</option>
+                    </select>
+                </div>
+
+                <!-- Campo dinámico para número o llave (si es breve solo poner la llave) -->
+                <div class="form-group" id="dynamicFieldGroup">
+                    <label><i>🔑</i> Ingresar número o llave requerida</label>
+                    <input type="text" id="paymentDetail" name="paymentDetail" placeholder="Cuenta, número, o llave (si es breve ingresa la llave)">
+                </div>
+
+                <!-- Campo adicional para aclaración si el medio es breve -->
+                <div id="extraBreveHint" style="font-size: 0.85rem; background: #dae2f8; padding: 10px 18px; border-radius: 60px; margin-top: -10px; margin-bottom: 20px; display: none; color: #09458d;">
+                    ⚡ Modo breve: puedes ingresar únicamente la <strong>llave</strong> en el campo de arriba.
+                </div>
+
+                <button type="button" class="btn-submit" id="submitBtn">✅ Registrar pago</button>
+                <div class="small-note" style="margin-top: 1rem;">Los datos se mostrarán en consola y alerta de prueba</div>
+            </form>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 3: RESUMEN Y CONFIRMACIÓN -->
+    <section class="slide">
+        <div class="card animate-on-scroll">
+            <h2 style="margin-bottom: 1rem; color: #1b1b1e;">📋 Resumen de pago</h2>
+            <div id="summaryArea" style="background: #f4f3f7; padding: 1.5rem; border-radius: 32px; margin-bottom: 1.5rem; border: 1px solid #c3c8d5;">
+                <p style="color: #46474a;">Aquí se previsualizarán los datos ingresados.</p>
+                <ul id="summaryList" style="margin-top: 12px; list-style: none; color: #1b1b1e;">
+                    <li>✨ Completa el formulario</li>
+                </ul>
+            </div>
+            <div class="scroll-buttons" style="position: relative; margin-top: 20px; display: flex; flex-direction: row; justify-content: center; gap: 16px;">
+                <a href="#scrollContainer" class="scroll-btn" style="background: #565e71; text-decoration: none;">⬆️</a>
+            </div>
+            <p class="small-note">✅ Usa los botones laterales o scroll suave</p>
+        </div>
+    </section>
+</div>
+
+<!-- SCROLL BUTTONS (fijos para navegación entre slides) -->
+<div class="scroll-buttons">
+    <button class="scroll-btn" id="prevSlide" title="Sección anterior">▲</button>
+    <button class="scroll-btn" id="nextSlide" title="Siguiente sección">▼</button>
+</div>
+
+<!-- SCROLL MARKER: indicador de progreso del scroll -->
+<div class="scroll-marker">
+    <span>📜 Scroll Marker</span>
+    <div class="marker-progress">
+        <div class="marker-fill" id="scrollFill"></div>
+    </div>
+</div>
+
+
+
+<script>
+    // ==================== ELEMENTOS DEL DOM ====================
+    const subjectSelect = document.getElementById('subjectSelect');
+    const paymentMethodSelect = document.getElementById('paymentMethod');
+    const paymentDetailInput = document.getElementById('paymentDetail');
+    const extraHint = document.getElementById('extraBreveHint');
+    const fullnameInput = document.getElementById('fullname');
+    const summaryList = document.getElementById('summaryList');
+    const submitBtn = document.getElementById('submitBtn');
+    const container = document.getElementById('scrollContainer');
+    const slides = document.querySelectorAll('.slide');
+
+    // ==================== CARGAR MATERIAS DESDE APPS SCRIPT ====================
+    function cargarMaterias() {
+        console.log("🟢 Cargando materias desde Apps Script...");
+        
+        subjectSelect.innerHTML = '<option value="">⏳ Cargando materias...</option>';
+        subjectSelect.disabled = true;
+        
+        google.script.run
+            .withSuccessHandler(function(respuesta) {
+                console.log("✅ Respuesta de obtenerLista():", respuesta);
+                
+                // La función obtenerLista() debe devolver un array directamente
+                let materias = respuesta;
+                
+                // Si por alguna razón viene como objeto con propiedad 'subjects'
+                if (respuesta && respuesta.subjects && Array.isArray(respuesta.subjects)) {
+                    materias = respuesta.subjects;
+                }
+                
+                if (!materias || materias.length === 0) {
+                    subjectSelect.innerHTML = '<option value="">⚠️ No hay materias disponibles</option>';
+                    subjectSelect.disabled = true;
+                } else {
+                    // Limpiar y llenar el select
+                    subjectSelect.innerHTML = '<option value="">-- Selecciona una materia --</option>';
+                    materias.forEach(function(materia) {
+                        if (materia && materia.trim() !== "") {
+                            const option = document.createElement('option');
+                            option.value = materia;
+                            option.textContent = materia;
+                            subjectSelect.appendChild(option);
+                        }
+                    });
+                    subjectSelect.disabled = false;
+                    console.log(`✅ Se cargaron ${materias.length} materias`);
+                }
+            })
+            .withFailureHandler(function(error) {
+                console.error("❌ Error en google.script.run:", error);
+                subjectSelect.innerHTML = '<option value="">❌ Error al cargar materias</option>';
+                subjectSelect.disabled = true;
+            })
+            .obtenerLista();  // Llama a tu función en Código.gs
+    }
+    
+    // Ejecutar carga de materias cuando la página esté lista
+    document.addEventListener('DOMContentLoaded', function() {
+        cargarMaterias();
+    });
+
+    // ==================== LÓGICA DEL FORMULARIO ====================
+    
+    function updatePaymentDetailField() {
+        const selected = paymentMethodSelect.value;
+        if (selected === 'Breve (llave)') {
+            paymentDetailInput.placeholder = "Ingresa la llave (ej: AZ-7890)";
+            extraHint.style.display = 'block';
+        } else if (selected === '') {
+            paymentDetailInput.placeholder = "Número o referencia (opcional si medio vacío)";
+            extraHint.style.display = 'none';
+        } else if (selected === 'Efectivo (acordar encuentro y dejar en blanco la parte inferior)') {
+            paymentDetailInput.placeholder = "Dejar en blanco (acordar encuentro)";
+            extraHint.style.display = 'none';
+        } else {
+            paymentDetailInput.placeholder = "Número de cuenta, ID o referencia requerida";
+            extraHint.style.display = 'none';
+        }
+        
+        if (selected === '' || selected === 'Efectivo (acordar encuentro y dejar en blanco la parte inferior)') {
+            paymentDetailInput.required = false;
+        } else {
+            paymentDetailInput.required = true;
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function updateSummary() {
+        const nombre = fullnameInput.value.trim() || "[No ingresado]";
+        const materia = subjectSelect.options[subjectSelect.selectedIndex]?.text || "[No seleccionada]";
+        const medio = paymentMethodSelect.options[paymentMethodSelect.selectedIndex]?.text || "(vacío)";
+        let detalle = paymentDetailInput.value.trim();
+        if (detalle === "") detalle = "(sin especificar)";
+        
+        summaryList.innerHTML = `
+            <li><strong>👤 Nombre:</strong> ${escapeHtml(nombre)}</li>
+            <li><strong>📚 Materia:</strong> ${escapeHtml(materia)}</li>
+            <li><strong>💸 Medio de pago:</strong> ${escapeHtml(medio)}</li>
+            <li><strong>🔢 Número / llave:</strong> ${escapeHtml(detalle)}</li>
+        `;
+    }
+
+    // Event listeners
+    paymentMethodSelect.addEventListener('change', updatePaymentDetailField);
+    paymentMethodSelect.addEventListener('change', updateSummary);
+    paymentDetailInput.addEventListener('input', updateSummary);
+    fullnameInput.addEventListener('input', updateSummary);
+    subjectSelect.addEventListener('change', updateSummary);
+    
+    updatePaymentDetailField();
+    updateSummary();
+
+    // ==================== BOTÓN DE ENVIAR ====================
+    submitBtn.addEventListener('click', function() {
+        const nombre = fullnameInput.value.trim();
+        if (!nombre) {
+            alert("⚠️ Por favor ingresa el nombre completo del empleado.");
+            return;
+        }
+        
+        const materia = subjectSelect.value;
+        if (!materia) {
+            alert("⚠️ Por favor selecciona una materia de la tutoría.");
+            return;
+        }
+        
+        const medioPago = paymentMethodSelect.value;
+        let detallePago = paymentDetailInput.value.trim();
+        
+        if (medioPago !== '' && medioPago !== 'Efectivo (acordar encuentro y dejar en blanco la parte inferior)' && detallePago === '') {
+            alert(`⚠️ El campo de número/llave es requerido para el medio de pago seleccionado.`);
+            return;
+        }
+        
+        // Deshabilitar botón mientras se guarda
+        submitBtn.disabled = true;
+        submitBtn.textContent = "💾 Guardando...";
+        
+        const datos = {
+            fullname: nombre,
+            subject: materia,
+            paymentMethod: medioPago,
+            paymentDetail: detallePago
+        };
+        
+        google.script.run
+            .withSuccessHandler(function() {
+                let mensaje = `✅ Pago registrado correctamente.\n\n`;
+                mensaje += `Nombre: ${nombre}\n`;
+                mensaje += `Materia: ${materia}\n`;
+                mensaje += `Medio de pago: ${medioPago || "(en blanco)"}\n`;
+                mensaje += `Detalle: ${detallePago || "(vacío)"}`;
+                alert(mensaje);
+                
+                // Limpiar formulario
+                fullnameInput.value = '';
+                paymentDetailInput.value = '';
+                subjectSelect.value = '';
+                paymentMethodSelect.value = '';
+                updateSummary();
+                
+                submitBtn.disabled = false;
+                submitBtn.textContent = "✅ Registrar pago";
+            })
+            .withFailureHandler(function(error) {
+                console.error("Error al guardar:", error);
+                alert(`❌ Error al registrar: ${error.message}`);
+                submitBtn.disabled = false;
+                submitBtn.textContent = "✅ Registrar pago";
+            })
+            .guardarDatos(datos);
+    });
+
+    // ==================== SCROLL-SNAP + BOTONES ====================
+    let currentIndex = 0;
+
+    function goToSlide(index) {
+        if (index < 0) index = 0;
+        if (index >= slides.length) index = slides.length - 1;
+        if (slides[index]) {
+            slides[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            currentIndex = index;
+        }
+    }
+
+    document.getElementById('prevSlide').addEventListener('click', function() {
+        goToSlide(currentIndex - 1);
+    });
+    
+    document.getElementById('nextSlide').addEventListener('click', function() {
+        goToSlide(currentIndex + 1);
+    });
+
+    // Detectar índice actual al hacer scroll
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                const idx = Array.from(slides).indexOf(entry.target);
+                if (idx !== -1) currentIndex = idx;
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    slides.forEach(function(slide) {
+        observer.observe(slide);
+    });
+
+    // SCROLL MARKER
+    function updateScrollMarker() {
+        if (!container) return;
+        const scrollTop = container.scrollTop;
+        const scrollHeight = container.scrollHeight - container.clientHeight;
+        let progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+        progress = Math.min(100, Math.max(0, progress));
+        const fillEl = document.getElementById('scrollFill');
+        if (fillEl) fillEl.style.width = progress + "%";
+    }
+    
+    container.addEventListener('scroll', updateScrollMarker);
+    window.addEventListener('resize', updateScrollMarker);
+    updateScrollMarker();
+
+    console.log("✅ Formulario inicializado correctamente");
+</script>
+
+<!-- ==================== INSTRUCCIONES PARA CONFIGURAR GOOGLE APPS SCRIPT ==================== -->
+<!--
+    📌 CÓMO CONFIGURAR GOOGLE APPS SCRIPT PARA OBTENER MATERIAS:
+
+    1. Abre tu Google Sheet que contiene las materias
+    2. Ve a Extensiones > Apps Script
+    3. Copia y pega el siguiente código:
+
+    function doGet() {
+      const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+      const data = sheet.getDataRange().getValues();
+      const subjects = [];
+      
+      // Asume que las materias están en la primera columna (A)
+      for (let i = 1; i < data.length; i++) {
+        const subject = data[i][0];
+        if (subject && subject.toString().trim() !== "") {
+          subjects.push(subject.toString().trim());
+        }
+      }
+      
+      return ContentService
+        .createTextOutput(JSON.stringify({ subjects: subjects }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    4. Haz clic en "Desplegar" > "Nuevo despliegue"
+    5. Tipo: "Aplicación web", Ejecutar como: "Yo", Acceso: "Cualquier persona"
+    6. Copia la URL generada
+    7. Reemplaza la variable APPS_SCRIPT_URL con esa URL
+    8. Cambia USE_MOCK_DATA a false
+
+    Si no quieres configurar el script ahora, la página usa datos de ejemplo automáticamente.
+-->
+</body>
+</html>
